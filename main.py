@@ -6,47 +6,47 @@ from utils import *
 
 def parse_args():
     desc = "Tensorflow implementation of U-GAT-IT"
-    parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('--phase', type=str, default='train', help='[train / test]')
-    parser.add_argument('--light', type=str2bool, default=False, help='[U-GAT-IT full version / U-GAT-IT light version]')
-    parser.add_argument('--dataset', type=str, default='selfie2anime', help='dataset_name')
+    parser = argparse.ArgumentParser(description=desc)  
+    parser.add_argument('--phase', type=str, default='train', help='[train / test]')  \\运行模式，train或test
+    parser.add_argument('--light', type=str2bool, default=False, help='[U-GAT-IT full version / U-GAT-IT light version]') \\是否使用轻量级模型
+    parser.add_argument('--dataset', type=str, default='selfie2anime', help='dataset_name') \\使用的数据集名称
 
-    parser.add_argument('--epoch', type=int, default=100, help='The number of epochs to run')
-    parser.add_argument('--iteration', type=int, default=10000, help='The number of training iterations')
-    parser.add_argument('--batch_size', type=int, default=1, help='The size of batch size')
-    parser.add_argument('--print_freq', type=int, default=1000, help='The number of image_print_freq')
-    parser.add_argument('--save_freq', type=int, default=1000, help='The number of ckpt_save_freq')
+    parser.add_argument('--epoch', type=int, default=100, help='The number of epochs to run') \\训练轮数
+    parser.add_argument('--iteration', type=int, default=10000, help='The number of training iterations') \\迭代次数
+    parser.add_argument('--batch_size', type=int, default=1, help='The size of batch size')  \\batch大小
+    parser.add_argument('--print_freq', type=int, default=1000, help='The number of image_print_freq')  \\图片打印频率
+    parser.add_argument('--save_freq', type=int, default=1000, help='The number of ckpt_save_freq') \\checkpoint保存频率
     parser.add_argument('--decay_flag', type=str2bool, default=True, help='The decay_flag')
-    parser.add_argument('--decay_epoch', type=int, default=50, help='decay epoch')
+    parser.add_argument('--decay_epoch', type=int, default=50, help='decay epoch')  \\可能是指的学习率衰减相关参数
 
-    parser.add_argument('--lr', type=float, default=0.0001, help='The learning rate')
-    parser.add_argument('--GP_ld', type=int, default=10, help='The gradient penalty lambda')
-    parser.add_argument('--adv_weight', type=int, default=1, help='Weight about GAN')
-    parser.add_argument('--cycle_weight', type=int, default=10, help='Weight about Cycle')
+    parser.add_argument('--lr', type=float, default=0.0001, help='The learning rate')  \\学习率
+    parser.add_argument('--GP_ld', type=int, default=10, help='The gradient penalty lambda') \\梯度惩罚， 是WGAN-GP相关
+    parser.add_argument('--adv_weight', type=int, default=1, help='Weight about GAN') \\gan权重参数
+    parser.add_argument('--cycle_weight', type=int, default=10, help='Weight about Cycle') \\cycle权重参数
     parser.add_argument('--identity_weight', type=int, default=10, help='Weight about Identity')
-    parser.add_argument('--cam_weight', type=int, default=1000, help='Weight about CAM')
-    parser.add_argument('--gan_type', type=str, default='lsgan', help='[gan / lsgan / wgan-gp / wgan-lp / dragan / hinge]')
+    parser.add_argument('--cam_weight', type=int, default=1000, help='Weight about CAM')  \\CAM注意力机制权重参数
+    parser.add_argument('--gan_type', type=str, default='lsgan', help='[gan / lsgan / wgan-gp / wgan-lp / dragan / hinge]') \\gan的类型
 
-    parser.add_argument('--smoothing', type=str2bool, default=True, help='AdaLIN smoothing effect')
+    parser.add_argument('--smoothing', type=str2bool, default=True, help='AdaLIN smoothing effect') \\是否使用AdaLIN平滑（猜测）
 
-    parser.add_argument('--ch', type=int, default=64, help='base channel number per layer')
-    parser.add_argument('--n_res', type=int, default=4, help='The number of resblock')
-    parser.add_argument('--n_dis', type=int, default=6, help='The number of discriminator layer')
-    parser.add_argument('--n_critic', type=int, default=1, help='The number of critic')
-    parser.add_argument('--sn', type=str2bool, default=True, help='using spectral norm')
-
-    parser.add_argument('--img_size', type=int, default=256, help='The size of image')
-    parser.add_argument('--img_ch', type=int, default=3, help='The size of image channel')
-    parser.add_argument('--augment_flag', type=str2bool, default=True, help='Image augmentation use or not')
+    parser.add_argument('--ch', type=int, default=64, help='base channel number per layer')   \\每层的通道数
+    parser.add_argument('--n_res', type=int, default=4, help='The number of resblock')  \\残差块数量
+    parser.add_argument('--n_dis', type=int, default=6, help='The number of discriminator layer') \\discriminator的层数
+    parser.add_argument('--n_critic', type=int, default=1, help='The number of critic')  \\不清楚
+    parser.add_argument('--sn', type=str2bool, default=True, help='using spectral norm') \\谱归一化，效果和GP还有WC类似，皆为满足1-Lipschitz
+    
+    parser.add_argument('--img_size', type=int, default=256, help='The size of image') \\图片的大小
+    parser.add_argument('--img_ch', type=int, default=3, help='The size of image channel') \\图片的通道数
+    parser.add_argument('--augment_flag', type=str2bool, default=True, help='Image augmentation use or not') \\是否进行图像增强（具体不知）
 
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoint',
-                        help='Directory name to save the checkpoints')
+                        help='Directory name to save the checkpoints')   \\保存checkpoint的文件夹
     parser.add_argument('--result_dir', type=str, default='results',
-                        help='Directory name to save the generated images')
+                        help='Directory name to save the generated images') \\保存生成图像的文件夹
     parser.add_argument('--log_dir', type=str, default='logs',
                         help='Directory name to save training logs')
     parser.add_argument('--sample_dir', type=str, default='samples',
-                        help='Directory name to save the samples on training')
+                        help='Directory name to save the samples on training')  \\保存训练时的sample的文件夹
 
     return check_args(parser.parse_args())
 
